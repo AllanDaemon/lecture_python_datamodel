@@ -39,6 +39,27 @@ o.method_with_arg("Hi", "There")
 del o
 ```
 
+```python
+>>> class ClassName(object):
+...     def __init__(self, arg):
+...             self.arg = arg
+...     def __del__(self):
+...             print "good bye"
+...     def method_name(self):
+...             pass
+...     def method_with_arg(self, arg1, arg2):
+...             print arg1, arg2
+... 
+>>> o = ClassName(42)
+>>> print o.arg
+42
+>>> o.method_with_arg("Hi", "There")
+Hi There
+>>> del o
+good bye
+
+```
+
 
 ## CPython implementation
 
@@ -89,6 +110,7 @@ typedef struct {
 	struct _typeobject *ob_type;
 	i64 ob_size; /* Number of items in variable part */
 } PyVarObject;
+
 ```
 
 
