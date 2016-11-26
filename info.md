@@ -194,6 +194,7 @@ https://github.com/fluentpython
 ### Iterable
 * `__iter__()` or `__getitem__()`
 * `iter()`
+* `next(iter)`
 * `StopIteration`
 
 ### Descriptor
@@ -209,12 +210,15 @@ class C(object):
         self._x = None
 
     def getx(self):
+        print "get x"
         return self._x
 
     def setx(self, value):
+    	print "set x", value
         self._x = value
 
     def delx(self):
+        print "del x"
         del self._x
 
     x = property(getx, setx, delx, "I'm the 'x' property.")
@@ -226,14 +230,17 @@ class C(object):
     @property
     def x(self):
         """I'm the 'x' property."""
+        print "get x"
         return self._x
 
     @x.setter
     def x(self, value):
+    	print "set x", value
         self._x = value
 
     @x.deleter
     def x(self):
+        print "del x"
         del self._x
 
 
@@ -245,6 +252,29 @@ del c.x
 c.x
 c.x = 20
 c.x
+
+>>> c = C()
+>>> c.x
+get x
+>>> c.x = 10
+set x 10
+>>> c.x
+get x
+10
+>>> del c.x
+del x
+>>> c.x
+get x
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "<string>", line 9, in x
+AttributeError: 'C' object has no attribute '_x'
+>>> c.x = 20
+set x 20
+>>> c.x
+get x
+20
+
 ```
 
 
