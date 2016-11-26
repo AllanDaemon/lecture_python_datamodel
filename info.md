@@ -14,6 +14,8 @@ http://images.slideplayer.com/28/9354004/slides/slide_12.jpg
 
 http://web.cs.ucla.edu/~forns/classes/winter-2014/cs-32/week-10.html
 
+--
+https://www.smartdraw.com/object-diagram/examples/object-diagram-employment-chart/w
 
 
 # Objects
@@ -112,9 +114,14 @@ typedef struct {
 } PyVarObject;
 
 ```
+## References
 
+https://www.safaribooksonline.com/library/view/learning-python-5th/9781449355722/ch06s02.html
 
 ## GC
+
+
+
 
 
 # Slots
@@ -125,9 +132,16 @@ http://python-history.blogspot.com.br/2010/06/inside-story-on-new-style-classes.
 http://tech.oyster.com/save-ram-with-python-slots/
 http://www.elfsternberg.com/2009/07/06/python-what-the-hell-is-a-slot/
 
+
+
+
+
 # Data Model
 
 ## Attributes and Interfaces
+
+https://docs.python.org/2/glossary.html
+https://github.com/fluentpython
 
 ### (Im)Mutable:
 	* **Immutable** may be reused (final on 3.1): a=1; b=1; # May be the same
@@ -170,9 +184,107 @@ http://www.elfsternberg.com/2009/07/06/python-what-the-hell-is-a-slot/
 	```
 
 
-* Hashable
-* Iterable
-* Container: Objects that references other objects
+### Hashable
+* Immutable
+* `__hash__()`
+* `__eq__()` or `__cmp__()`
+* object.__hash__ == id
+
+
+### Iterable
+* `__iter__()` or `__getitem__()`
+* `iter()`
+* `StopIteration`
+
+### Descriptor
+* `__get__()`
+* `__set__()` 
+* `__delete__()`
+
+`class property([fget[, fset[, fdel[, doc]]]])`
+
+```python
+class C(object):
+    def __init__(self):
+        self._x = None
+
+    def getx(self):
+        return self._x
+
+    def setx(self, value):
+        self._x = value
+
+    def delx(self):
+        del self._x
+
+    x = property(getx, setx, delx, "I'm the 'x' property.")
+
+class C(object):
+    def __init__(self):
+        self._x = None
+
+    @property
+    def x(self):
+        """I'm the 'x' property."""
+        return self._x
+
+    @x.setter
+    def x(self, value):
+        self._x = value
+
+    @x.deleter
+    def x(self):
+        del self._x
+
+
+c = C()
+c.x
+c.x = 10
+c.x
+del c.x
+c.x
+c.x = 20
+c.x
+```
+
+
+### Container
+
+Objects that references other objects
+
+#### Sequences
+* `__getitem__()`
+* `__len__()`
+
+* tuple
+* list
+* str
+* unicode
+* bytes
+
+
+
+#### Mapping
+lookups use arbitrary immutable keys rather than integers
+
+* dict
+* collections.defaultdict
+* collections.OrderedDict
+* collections.Counter
+
+
+
+### ABC & Others
+
+* https://docs.python.org/2/library/collections.html
+* https://docs.python.org/3.7/library/collections.abc.html
+
+* https://docs.python.org/2/library/collections.html#collections-abstract-base-classes
+* https://docs.python.org/3.7/library/collections.abc.html#collections-abstract-base-classes
+
+* file: `read()` and `write()`
+* byte arrays
+* etc
 
 ## Type Hierarchy
 
@@ -239,8 +351,107 @@ http://www.elfsternberg.com/2009/07/06/python-what-the-hell-is-a-slot/
 
 __specialnames__
 
+# Special Attributes
+
+https://docs.python.org/2/library/stdtypes.html#special-attributes
+https://docs.python.org/3.7/library/stdtypes.html#special-attributes
+
+## object.__dict__
+A dictionary or other mapping object used to store an object’s (writable) attributes.
+
+`vars(obj)`
+`dir(obj)`
+
+## instance.__class__
+The class to which a class instance belongs.
+
+## class.__bases__
+The tuple of base classes of a class object.
+
+## definition.__name__
+The name of the class, function, method, descriptor, or generator instance.
+
+## definition.__qualname__
+The qualified name of the class, function, method, descriptor, or generator instance.
+
+New in version 3.3.
+
+## class.__mro__
+This attribute is a tuple of classes that are considered when looking for base classes during method resolution.
+
+## class.mro()
+This method can be overridden by a metaclass to customize the method resolution order for its instances. It is called at class instantiation, and its result is stored in __mro__.
+
+## class.__subclasses__()
+Each class keeps a list of weak references to its immediate subclasses. This method returns a list of all those references still alive. Example:
+
+`>>> int.__subclasses__()`
+`[<class 'bool'>]`
+
+## object.__metaclass__
+
+__prepare__
+
+
+## docstring
+
+object.__doc__
+
+`help()`
+
+## callable
+
+#### __doc__
+Writable
+The function’s documentation string, or None if unavailable; not inherited by subclasses
+
+#### __name__
+Writable
+The function’s name
+
+#### __qualname__
+Writable
+The function’s qualified name
+
+New in version 3.3.
+
+#### __module__
+Writable
+The name of the module the function was defined in, or None if unavailable.
+
+#### __defaults__
+Writable
+A tuple containing default argument values for those arguments that have defaults, or None if no arguments have a default value
+
+#### __code__
+Writable
+The code object representing the compiled function body.
+
+#### __globals__
+Read-only
+A reference to the dictionary that holds the function’s global variables — the global namespace of the module in which the function was defined.
+
+#### __dict__
+Writable
+The namespace supporting arbitrary function attributes.
+
+#### __closure__
+Read-only
+None or a tuple of cells that contain bindings for the function’s free variables.
+
+#### __annotations__
+Writable
+A dict containing annotations of parameters. The keys of the dict are the parameter names, and 'return' for the return annotation, if provided.
+
+#### __kwdefaults__
+Writable
+A dict containing defaults for keyword-only parameters.
+
 
 # Special Methods
+
+in class `__dict__`
+not int instance `__dict__`.
 
 ## Basic
 
@@ -279,10 +490,12 @@ object.__bool__(self)		# py3
 ### hash
 object.__hash__(self)
 
+https://docs.python.org/3.7/library/stdtypes.html#hashing-of-numeric-types
+
 
 ## Attribute Access
 
-x.name
+`x.name`
 
 object.__getattr__(self, name)		# Not always called (just when not found in ...)
 object.__getattribute__(self, name)		# New style class. Always called
@@ -312,6 +525,9 @@ object.__set_name__(self, owner, name)		# py3.6
 ### Checking
 class.__instancecheck__(self, instance)
 class.__subclasscheck__(self, subclass)
+
+isinstance(object, classinfo)
+issubclass(class, classinfo)
 
 
 ## Callable Objects
@@ -427,8 +643,4 @@ object.__anext__(self)
 ### Asynchronous Context Managers
 object.__aenter__(self)
 object.__aexit__(self, exc_type, exc_value, traceback)
-
-
-
-
 
